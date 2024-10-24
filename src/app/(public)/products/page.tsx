@@ -1,4 +1,4 @@
-// "use client"
+"use client"
 import Categories from "@/components/block/page/products/categories";
 import { getCategories } from "@/lib/directus/methods";
 
