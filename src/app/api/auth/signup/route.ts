@@ -1,8 +1,6 @@
 import { responseHelper, sendEmail } from '@/lib/helpers';
 import rateLimit from '@/lib/ratelimit';
-import { directus, generateAndHashOtp } from '@/lib/utils';
-import { AuthRequest } from '@/types/api';
-import { createItem, readItems, updateItem } from '@directus/sdk';
+import { generateAndHashOtp } from '@/lib/utils';
 import { findUserByEmail } from '../../../../../db/users';
 import { getAuthRequestByEmailAndAction, insertAuthRequest, updateAuthRequestStatusWithID } from '../../../../../db/auth';
 
