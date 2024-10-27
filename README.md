@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dukaan - E-commerce Application
+
+**Dukaan** is a fully-featured e-commerce platform built with [Next.js](https://nextjs.org/), utilizing [Prisma](https://www.prisma.io/) as the ORM and [PostgreSQL](https://www.postgresql.org/) as the database. It provides a scalable and efficient system for managing products, orders, payments, and user data.
+
+## Features
+
+- **Next.js**: Server-side rendering for faster page loads and better SEO.
+- **Prisma ORM**: Simplified database management with a type-safe client.
+- **PostgreSQL**: Robust relational database for storing all app data.
+- **Stripe Integration**: Secure payments with Stripe.
+- **Admin Dashboard**: Manage products, orders, and inventory.
+- **Cart and Checkout System**: Full shopping cart functionality with order management.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Before running the application, ensure you have the following installed:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Node.js** (v14 or later)
+- **PostgreSQL** (v12 or later)
+- **Prisma CLI**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Clone the repository:
 
-## Learn More
+    ```bash
+    git clone https://github.com/your-repo/dukaan.git
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Navigate into the project directory:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ```bash
+    cd dukaan
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. Install the dependencies:
 
-## Deploy on Vercel
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Create a `.env` file in the root of the project and add your PostgreSQL database URL and other environment variables:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    ```bash
+    DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/DB_NAME
+    ```
+
+5. Run Prisma migrations to set up the database schema:
+
+    ```bash
+    npx prisma migrate dev
+    ```
+
+6. Start the development server:
+
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+7. Open [http://localhost:3000](http://localhost:3000) to view the app in the browser.
+
+### Database Management
+
+- Run Prisma Studio to manage your database visually:
+
+    ```bash
+    npx prisma studio
+    ```
+
+## Contributing
+
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
