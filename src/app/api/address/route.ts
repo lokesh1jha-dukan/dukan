@@ -1,33 +1,34 @@
 import { responseHelper } from '@/lib/helpers';
 import { directus } from '@/lib/utils';
 import { readItems, updateItem, createItem, deleteItem, readItem } from '@directus/sdk';
+import { createAddressByUserId, deleteAddressByUserId, getAllAddressesByUserId, updateAddressByUserId } from '../../../../db/users';
+import { Address } from '@/types/server/types';
 
-interface Address {
-    user_id: number;
-    address_line1: string;
-    address_line2?: string;
-    city: string;
-    state?: string;
-    country?: string;
-    pincode: string;
-    created_at?: string;
-    updated_at?: string;
-}
+// interface Address {
+//     user_id: number;
+//     address_line1: string;
+//     address_line2?: string;
+//     city: string;
+//     state?: string;
+//     country?: string;
+//     pincode: string;
+//     created_at?: string;
+//     updated_at?: string;
+// }
 
 
 export async function GET(req: Request) {
     try {
         const url = new URL(req.url)
         const id = url.searchParams.get("id");
+        // TODO: Fetch user details from token
         const userId = url.searchParams.get("userid");
 
         let fetchAllAddresses: boolean = (id == undefined || id == null);
 
         if (fetchAllAddresses) {
             //@ts-ignore
-            const addresses = await directus.request(readItems('addresses', {
-                filter: { user_id: { _eq: userId } }
-            }));
+            const addresses = await getAllAddressesByUserId(userId);
             return responseHelper({ message: 'Addresses fetched successfully', statusCode: 200, data: addresses }, 200);
         }
 
@@ -35,7 +36,8 @@ export async function GET(req: Request) {
             return responseHelper({ message: 'Invalid request, address\'s id is missing', statusCode: 400, data: {} }, 400);
         }
         //@ts-ignore
-        const addressItem = await directus.request(readItem('addresses', id));
+        const addressItem = await getAddressByIdAndUserId(id, userId);
+
         if (!addressItem) {
             return responseHelper({ message: 'Address not found', statusCode: 404, data: {} }, 404);
         }
@@ -51,12 +53,13 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const { address }: { address: Address; } = await req.json();
+        // TODO: Fetch user details from token
+        const { user_id } = await req.json();
 
-        // If address is provided, create a new address
-        if (address) {
+        if (address && user_id) {
             address.updated_at = new Date().toISOString();
             address.created_at = new Date().toISOString();
-            await directus.request(createItem('addresses', { address }));
+            await createAddressByUserId(user_id, address);
             return responseHelper({ message: 'Address created successfully', statusCode: 200, data: {} }, 200);
         }
         return responseHelper({ message: 'Invalid request', statusCode: 400, data: {} }, 400);
@@ -71,11 +74,13 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
     try {
         const { id, address }: { id: string; address: Address } = await req.json();
+        // TODO: Fetch user details from token
+        const { user_id } = await req.json();
 
-        if (id) {
+        if (id && address && user_id) {
             address.updated_at = new Date().toISOString();
-            let result = await directus.request(updateItem('addresses', id, { address }));
 
+            await updateAddressByUserId(user_id, address);
             // TODO: check if result is not null the change the response
             return responseHelper({ message: 'Address updated successfully', statusCode: 200, data: {} }, 200);
         }
@@ -92,9 +97,11 @@ export async function DELETE(req: Request) {
     try {
         const { id } = await req.json();
 
+        // TODO: Fetch user details from token
+        const { user_id } = await req.json();
         // If ID is provided, delete the address
-        if (id) {
-            await directus.request(deleteItem('addresses', id));
+        if (id && user_id) {
+            await deleteAddressByUserId(user_id, id);
             return responseHelper({ message: 'Address deleted successfully', statusCode: 200, data: {} }, 200);
         } else {
             return responseHelper({ message: 'Invalid request', statusCode: 400, data: {} }, 400);
