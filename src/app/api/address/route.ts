@@ -1,21 +1,6 @@
 import { responseHelper } from '@/lib/helpers';
-import { directus } from '@/lib/utils';
-import { readItems, updateItem, createItem, deleteItem, readItem } from '@directus/sdk';
 import { createAddressByUserId, deleteAddressByUserId, getAllAddressesByUserId, updateAddressByUserId } from '../../../../db/users';
 import { Address } from '@/types/server/types';
-
-// interface Address {
-//     user_id: number;
-//     address_line1: string;
-//     address_line2?: string;
-//     city: string;
-//     state?: string;
-//     country?: string;
-//     pincode: string;
-//     created_at?: string;
-//     updated_at?: string;
-// }
-
 
 export async function GET(req: Request) {
     try {

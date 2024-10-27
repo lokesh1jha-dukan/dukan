@@ -10,6 +10,15 @@ export const findUserByEmail = async (email: string) => {
     return user;
 };
 
+export const findUserById = async (userId: number) => {
+    const user = await prisma.users.findUnique({
+        where: {
+            id: userId
+        }
+    });
+    return user;
+}
+
 export const getAllAddressesByUserId = async (userId: number) => {
     const addresses = await prisma.addresses.findMany({
         where: {

@@ -8,8 +8,6 @@ import { getProductsByCategoryId } from "@/lib/prisma";
 import { getCategories } from "@/lib/directus/methods";
 import AddProductModal from "./addProduct";
 import AddCategoryModal from "./addCategory";
-import { directus } from "@/lib/utils";
-import { createItem } from "@directus/sdk";
 
 const sampleProduct: Product = {
   id: 1,
