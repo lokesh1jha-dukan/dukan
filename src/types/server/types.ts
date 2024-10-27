@@ -82,7 +82,7 @@ export interface OrderItem {
 }
 
 export interface Address  {
-    id: number;
+    id?: number;
     user_id?: number;
     address_line1?: string;
     address_line2?: string;

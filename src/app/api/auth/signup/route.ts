@@ -1,8 +1,8 @@
 import { responseHelper, sendEmail } from '@/lib/helpers';
 import rateLimit from '@/lib/ratelimit';
-import { directus, generateAndHashOtp } from '@/lib/utils';
-import { AuthRequest } from '@/types/api';
-import { createItem, readItems, updateItem } from '@directus/sdk';
+import { generateAndHashOtp } from '@/lib/utils';
+import { findUserByEmail } from '../../../../../db/users';
+import { getAuthRequestByEmailAndAction, insertAuthRequest, updateAuthRequestStatusWithID } from '../../../../../db/auth';
 
 const limiter = rateLimit({
     interval: 60 * 1000, // 60 seconds
@@ -20,32 +20,17 @@ export async function POST(req: Request) {
             return responseHelper({ message: 'Email is required', statusCode: 400, data:{} }, 200, limit, remaining);
         }
 
-        const userFilter = { filter: { email: { _eq: email } } };
-        // @ts-ignore
-        const isEmailExists = await directus.request(readItems('users', userFilter));
+        const isEmailExists = await findUserByEmail(email);
 
         const { otp, hashedOtp } = await generateAndHashOtp();
-        const action = isEmailExists.length ? 'login' : 'signup';
-        const authRequestFilter = { filter: { email: { _eq: email }, action: { _eq: action } } };
-        // @ts-ignore
-        const authRequestExists = await directus.request(readItems('auth_requests', authRequestFilter));
+        const action = isEmailExists ? 'login' : 'signup';
+        const authRequestExists = await getAuthRequestByEmailAndAction(email, action);
+
         if (authRequestExists.length) {
-            const requestObj = authRequestExists[0] as AuthRequest;
-            await directus.request(updateItem("auth_requests", requestObj.id, {
-                date_updated: new Date().toISOString(),
-                hashed_otp: hashedOtp,
-                status: 'pending',
-                action
-            }));
+            const requestObj = authRequestExists[0];
+            await updateAuthRequestStatusWithID(requestObj.id, new Date().toISOString(), hashedOtp, 'pending', action);
         } else {
-            await directus.request(createItem('auth_requests', {
-                date_created: new Date().toISOString(),
-                date_updated: new Date().toISOString(),
-                hashed_otp: hashedOtp,
-                email,
-                status: 'pending',
-                action
-            }));
+            await insertAuthRequest(new Date().toISOString(), new Date().toISOString(), hashedOtp, email, 'pending', action);
         }
 
         // Mail the OTP to the user

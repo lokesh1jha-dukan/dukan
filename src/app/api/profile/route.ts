@@ -1,6 +1,5 @@
 import { responseHelper } from '@/lib/helpers';
-import { directus } from '@/lib/utils';
-import { readItems } from '@directus/sdk';
+import { findUserById } from '../../../../db/users';
 
 export async function PATCH(req: Request) {
     try {
@@ -35,7 +34,7 @@ export async function GET(req: Request) {
 
         // Fetch user details
         //@ts-ignore
-        const userDetails = await directus.request(readItems('users', userId));
+        const userDetails = await findUserById(userId);
         if (!userDetails) {
             return responseHelper({ message: 'User not found', statusCode: 400, data: {} }, 404);
         }
