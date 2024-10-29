@@ -14,46 +14,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { InputOTPForm } from "@/components/block/InputOtpForm";
-import { useToast } from "@/components/ui/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ApiResponseObject, ResponseObject } from "@/types/client/types";
+import { toast } from "sonner";
+
+
 
 export default function LoginForm() {
-   const [showOtpScreen, setShowOtpScreen] = useState(false)
-   const [email, setEmail] = useState("")
-   const [isLoading, setIsLoading] = useState(false)
-   const {toast} = useToast()
+  const [showOtpScreen, setShowOtpScreen] = useState(false)
+  const [email, setEmail] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget); 
-        const email = formData.get("email")
-        setIsLoading(true)
-        let response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email })
-        })
-        const data: ResponseObject = await response.json()
-        setIsLoading(false)
-        // TODO: Incorrect OTP message to be send
-        //@ts-ignore
-        if(data.response.statusCode === 400) {
-          // TODO: show notification
-          toast({
-            title: "Error",
-            description: data.response.message ||  "Please try again",
-          });
-          return;
-        }
-
-        
-        // toast({title: "Success", description:"OTP sent to your email"})
-        console.log(data, "response")
-        setShowOtpScreen(true)
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email")
+    setIsLoading(true)
+    let response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email })
+    })
+    const data: ResponseObject = await response.json()
+    setIsLoading(false)
+    console.log(data, "response")
+    if (data.response.statusCode == 400) {
+      toast.error(data.response.message);
+      return;
     }
+
+    toast.success("OTP sent to your email")
+    console.log(data, "response")
+    setShowOtpScreen(true)
+  }
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -86,8 +81,8 @@ export default function LoginForm() {
                   type="submit"
                   className={"w-full"}
                   disabled={isLoading}
-                  >
-                  {isLoading ? <LoadingSpinner/> : false}
+                >
+                  {isLoading ? <LoadingSpinner /> : false}
                   Login
                 </Button>
                 {/* <Button variant="outline" className="w-full">
