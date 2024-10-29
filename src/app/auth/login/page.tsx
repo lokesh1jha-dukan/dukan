@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { InputOTPForm } from "@/components/block/InputOtpForm";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { ApiResponseObject, ResponseObject } from "@/types/client/types";
+import { ResponseObject } from "@/types/client/types";
 import { toast } from "sonner";
 
 
